@@ -1,1 +1,13 @@
 .DS_Store
+*.log
+*build
+*.a
+src/pjsip-apps/bin
+src/pjlib/bin
+src/pjsip/bin
+src/pjnath/bin
+src/pjlib-util/bin
+src/pjmedia/bin
+pjsip.save
+src/build.mak
+src/config.status
