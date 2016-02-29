@@ -40,7 +40,8 @@ sleep 1 && echo "4..." && \
 echo "git-cleaning..."
   cd "$BASE_DIR"/src
   git clean -xdf > "$BASE_DIR"/clean.log
-  find $BASE_DIR/lib -name '*.a' -exec rm -f {} \; 
+  find $BASE_DIR/lib -name '*.a' -exec rm -f {} \;
+  rm -rf lib/* 
 }
 
 
@@ -111,6 +112,9 @@ function _collect() {
     cp -v ./$x ./lib/$1
     rm -v ./$x
   done | tee "$BASE_DIR"/collect.log
+  for x in `find lib/$1 | grep "\.a$"`; do
+  	mv "$x" "${x//-$1/}"
+  done;
 }
 
 function _merge() {
@@ -118,9 +122,9 @@ function _merge() {
   cd "$BASE_DIR"
 
   for lib in `find lib/i386/*.a`; do
-    lipo -arch armv7 lib/armv7/${lib/i386/armv7} \
-      -arch armv7s lib/armv7s/${lib/i386/armv7s} \
-      -arch arm64 lib/arm64/${lib/i386/arm64} \
+    lipo -arch armv7 lib/armv7/${lib##*/} \
+      -arch armv7s lib/armv7s/${lib##*/} \
+      -arch arm64 lib/arm64/${lib##*/} \
       -arch i386 lib/i386/${lib##*/} \
       -create -output lib/${lib##*/}
   done | tee "$BASE_DIR"/merge.log
